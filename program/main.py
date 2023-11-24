@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
+from multiprocessing import heap
 import random as rnd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -32,8 +33,7 @@ def heapify(work_list, n, i):
         heapify(work_list, n, largest)
 
 
-def heap_sort(li):
-    work_list = li.copy()
+def heap_sort(work_list):
     n = len(work_list)
 
     # Построение максимальной кучи
@@ -45,8 +45,6 @@ def heap_sort(li):
         work_list[i], work_list[0] = work_list[0], work_list[i]  # Свап
         heapify(work_list, i, 0)
 
-    return work_list
-
 
 def heap_sort_py(iterable):
     # Преобразование списка в кучу
@@ -56,9 +54,44 @@ def heap_sort_py(iterable):
     return [heapq.heappop(iterable) for _ in range(len(iterable))]
 
 
+def _siftup_max(heap, n, pos):
+    'Maxheap variant of _siftup'
+    endpos = n
+    newitem = heap[pos]
+    childpos = 2*pos + 1
+
+    while childpos < endpos:
+        rightpos = childpos + 1
+
+        if rightpos < endpos and not heap[rightpos] < heap[childpos]:
+            childpos = rightpos
+
+        if heap[pos] < heap[childpos]:
+            heap[pos] = heap[childpos]
+
+            pos = childpos
+            childpos = 2*pos + 1
+        else:
+            break
+
+    heap[pos] = newitem
+
+
+def heap_sort_max_py(iterable):
+    n = len(iterable)
+
+    # Преобразование списка в кучу
+    heapq._heapify_max(iterable)
+
+    # Извлечение максимальных элементов из кучи для сортировки
+    for i in range(n-1, 0, -1):
+        iterable[i], iterable[0] = iterable[0], iterable[i]  # Свап
+        _siftup_max(iterable, i, 0)
+
+
 def find_coeffs_bin(x, time):
-    params, covariance = curve_fit(n_log_n, np.array(x),
-                                   np.array(time))
+    params, _ = curve_fit(n_log_n, np.array(x),
+                          np.array(time))
     a, b = params
     return a, b
 
@@ -89,17 +122,18 @@ def create_list(size, max_value, option):
             return []
 
 
-def func_time(x, model, case, case_name, size):
+def func_time(model, case, case_name, size):
     time = []
     randmax = 1000000
+    x = [i for i in range(1000, 50001, 1000)]
+    repeat = 10
     for i in x:
         timer = 0
-        for _ in range(50):
+        for _ in range(repeat):
             list_temp = create_list(i, randmax, case[1])
             timer += (timeit.timeit(lambda: model(list_temp),
                                     number=1))
-        time.append(timer/50)
-
+        time.append(timer/repeat)
     plt.figure(case[0] + case_name, size)
     plt.subplots_adjust(left=0.25)
     # Создание графиков
@@ -107,7 +141,6 @@ def func_time(x, model, case, case_name, size):
 
 
 if __name__ == '__main__':
-    x = [i for i in range(10, 501, 10)]
     # Настройка размера окон
     dpi = 100
     width_inches = (1680 / dpi) / 4
@@ -116,9 +149,11 @@ if __name__ == '__main__':
     item_func_name = {"Лучший": "ordered",
                       "Средний": "random", "Худший": "reverse"}
     for case_func in item_func_name.items():
-        func_time(x, heap_sort, case_func,
-                  " Пирамидальная сортировка", size)
-        func_time(x, heap_sort_py, case_func,
+        # func_time(x, heap_sort, case_func,
+        #           " Пирамидальная сортировка", size)
+        func_time(heap_sort_py, case_func,
+                  " Heapq сортировка", size)
+        func_time(heap_sort_max_py, case_func,
                   " Heapq сортировка", size)
 
     # Показ графиков†
