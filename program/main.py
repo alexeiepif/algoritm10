@@ -51,7 +51,7 @@ def heap_sort(li):
 def heap_sort_py(iterable):
     # Преобразование списка в кучу
     heapq.heapify(iterable)
-    
+
     # Извлечение минимальных элементов из кучи для сортировки
     return [heapq.heappop(iterable) for _ in range(len(iterable))]
 
@@ -97,7 +97,7 @@ def func_time(x, model, case, case_name, size):
         for _ in range(50):
             list_temp = create_list(i, randmax, case[1])
             timer += (timeit.timeit(lambda: model(list_temp),
-                                number=1))
+                                    number=1))
         time.append(timer/50)
 
     plt.figure(case[0] + case_name, size)
@@ -113,12 +113,13 @@ if __name__ == '__main__':
     width_inches = (1680 / dpi) / 4
     height_inches = (850 / dpi) / 2
     size = (width_inches, height_inches)
-    item_func_name = {"Лучший": "ordered", "Средний": "random", "Худший": "reverse"}
+    item_func_name = {"Лучший": "ordered",
+                      "Средний": "random", "Худший": "reverse"}
     for case_func in item_func_name.items():
         func_time(x, heap_sort, case_func,
                   " Пирамидальная сортировка", size)
         func_time(x, heap_sort_py, case_func,
                   " Heapq сортировка", size)
-        
+
     # Показ графиков†
     plt.show()
