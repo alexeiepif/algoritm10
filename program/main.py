@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-from multiprocessing import heap
 import random as rnd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -132,8 +131,10 @@ def create_list(size, max_value, option):
 def func_time(class_func, case, case_name, size):
     time = []
     randmax = 1000000
-    x = [i for i in range(10, 1001, 10)]
+    x = [i for i in range(1000, 10001, 100)]
     repeat = 20
+    if class_func == MySort:
+        x = x[:50]
     for i in x:
         timer = 0
         for _ in range(repeat):
@@ -154,10 +155,12 @@ if __name__ == '__main__':
     height_inches = (850 / dpi) / 2
     size = (width_inches, height_inches)
     item_func_name = {"Лучший": "ordered",
-                      "Средний": "random", "Худший": "reverse"}
+                      "Средний": "random",
+                      "Худший": "reverse"}
+
     for case_func in item_func_name.items():
-        # func_time(x, heap_sort, case_func,
-        #           " Пирамидальная сортировка", size)
+        func_time(MySort, case_func,
+                  " My Heapsort", size)
         func_time(HeapqSort, case_func,
                   " Heapq сортировка", size)
         func_time(HeapSortSpeed, case_func,
