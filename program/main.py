@@ -139,8 +139,12 @@ def func_time(class_func, case, case_name, size):
         timer = 0
         for _ in range(repeat):
             list_temp = create_list(i, randmax, case[1])
-            timer += (timeit.timeit(lambda: class_func.heap_sort(list_temp),
-                                    number=1))
+            timer += (
+                timeit.timeit(
+                    lambda: class_func.heap_sort(list_temp),
+                    number=1
+                )
+            )
         time.append(timer/repeat)
     plt.figure(case[0] + case_name, size)
     plt.subplots_adjust(left=0.25)
@@ -154,17 +158,25 @@ if __name__ == '__main__':
     width_inches = (1680 / dpi) / 4
     height_inches = (850 / dpi) / 2
     size = (width_inches, height_inches)
-    item_func_name = {"Лучший": "ordered",
-                      "Средний": "random",
-                      "Худший": "reverse"}
+    item_func_name = {
+        "Лучший": "ordered",
+        "Средний": "random",
+        "Худший": "reverse"
+    }
 
     for case_func in item_func_name.items():
-        func_time(MySort, case_func,
-                  " My Heapsort", size)
-        func_time(HeapqSort, case_func,
-                  " Heapq сортировка", size)
-        func_time(HeapSortSpeed, case_func,
-                  " Heapq сортировка", size)
+        func_time(
+            MySort, case_func,
+            " My Heapsort", size
+        )
+        func_time(
+            HeapqSort, case_func,
+            " Heapq сортировка", size
+        )
+        func_time(
+            HeapSortSpeed, case_func,
+            " Heapq сортировка", size
+        )
 
     # Показ графиков†
     plt.show()
